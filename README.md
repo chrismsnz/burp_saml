@@ -2,6 +2,7 @@ Burp Extension - SAML Message editor
 ====================================
 
 Author: Chris Smith, Insomnia Security
+
 Email: chris.smith@insomniasec.com
 
 This extension provides a simple method for viewing and altering any SAML
