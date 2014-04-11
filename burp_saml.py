@@ -57,6 +57,14 @@ import zlib
 
 saml_parameter_names = ['SAMLResponse', 'SAMLRequest']
 
+# This is disabled by default because of a bug in Jython.
+# minidom on cPython does not expand entities, whereas Jython's implementation
+# does. This exposes the user to XXE-type issues when dealing with a server
+# that is untrusted.
+#
+# If you know what you are doing, you can re-enable this.
+config_pretty_print = False
+
 
 class BurpExtender(IBurpExtender, IMessageEditorTabFactory):
 
@@ -119,8 +127,11 @@ class SAMLMessage(object):
 
     def get_pretty_message(self):
         """Retrieve the message formatted for human eyes"""
-        xml_dom = xml.dom.minidom.parseString(self.raw_message)
-        return xml_dom.toprettyxml(indent='\t')
+        if config_pretty_print:
+            xml_dom = xml.dom.minidom.parseString(self.raw_message, resolve_entities=False)
+            return xml_dom.toprettyxml(indent='\t')
+        else:
+            return self.raw_message
 
     def set_pretty_message(self, pretty_msg):
         """Sets the message from pretty-formatted XML"""
